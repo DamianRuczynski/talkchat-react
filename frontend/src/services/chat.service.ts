@@ -1,34 +1,34 @@
 import { TChat } from "@/types/chat.types";
-
-const mockMessages = [
-  {
-    id: 1,
-    sender: "Alice",
-    text: "Hi there! How are you?",
-    isMine: false,
-  },
-  {
-    id: 2,
-    sender: undefined,
-    text: "I'm good, thanks for asking!",
-    isMine: true,
-  },
-];
+import apiClient from "@/utils/api.client";
 
 export const getChats = async (userId: string): Promise<TChat[]> => {
-  console.log("Fetching chats for user: ", userId);
-
-  if (!userId) {
-    throw new Error("User not logged in");
-  }
-  return [
-    { id: "1", name: "Chat with Alice", messages: mockMessages },
-    { id: "2", name: "Team Discussion", messages: mockMessages },
-    { id: "3", name: "Project X", messages: mockMessages },
-  ];
+  const response = await apiClient.get(`/chat/${userId}`);
+  return response.data;
 };
 
-export const getChatById = async (userId: string, id: string): Promise<TChat | null> => {
-  const chats = await getChats(userId);
-  return chats.find((chat) => chat.id === id) || null;
+// TODO load chats only from user id
+export const getChatById = async (
+  userId: string,
+  chatId: string
+): Promise<TChat | null> => {
+  const response = await apiClient.get(`/chat/${userId}/${chatId}`);
+  return response.data;
+};
+
+export const createChat = async (
+  userId: string,
+  name: string
+): Promise<TChat> => {
+  const response = await fetch(`/chat`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ userId, name }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to create chat");
+  }
+  return response.json();
 };

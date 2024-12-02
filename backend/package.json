@@ -8,6 +8,7 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@prisma/client": "^6.0.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -23,6 +24,7 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.10.1",
     "@types/validator": "^13.12.2",
+    "prisma": "^6.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   }

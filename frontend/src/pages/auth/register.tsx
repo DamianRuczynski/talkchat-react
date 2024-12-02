@@ -14,6 +14,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/auth.context";
+import { User } from "@/types/auth.types";
 
 export const Register = () => {
   const navigate = useNavigate();
@@ -37,8 +38,11 @@ export const Register = () => {
     e.preventDefault();
 
     try {
-      await registerUser(formData);
-      navigate("/chat/1");
+      await registerUser(formData).then((user: User | null) => {
+        if (user) {
+          navigate(`/chat/${user._id}`);
+        }
+      });
     } catch (err) {
       console.error("Registration failed:", err);
     }

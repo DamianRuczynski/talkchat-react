@@ -5,6 +5,7 @@ import { MessageList } from "./message-list";
 import { useEffect, useState } from "react";
 import { TChat } from "@/types/chat.types";
 import { useAuth } from "@/context/auth.context";
+import { Landing } from "./landing";
 
 export const ChatArea = ({ chatId }: { chatId: string }) => {
   const { user } = useAuth();
@@ -13,8 +14,8 @@ export const ChatArea = ({ chatId }: { chatId: string }) => {
   useEffect(() => {
     const fetchChat = async () => {
       if (chatId) {
-        if(user){
-          const data = await getChatById(user.id, chatId);
+        if (user) {
+          const data = await getChatById(user._id, chatId);
           setChat(data);
         }
       }
@@ -22,11 +23,11 @@ export const ChatArea = ({ chatId }: { chatId: string }) => {
     fetchChat();
   }, [chatId]);
 
-  if (!chat) return <div>Loading...</div>;
+  if (!chat) return <Landing></Landing>;
 
   return (
     <div className="flex flex-col h-full">
-      <ChatHeader chatName={chat.name} />
+      <ChatHeader chatName={chat?.name} />
       <MessageList messages={chat.messages} />
       <MessageInput />
     </div>

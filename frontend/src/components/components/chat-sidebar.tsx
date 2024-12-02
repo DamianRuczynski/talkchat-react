@@ -14,22 +14,58 @@ import { useAuth } from "@/context/auth.context";
 import { getChats } from "@/services/chat.service";
 import { TChat } from "@/types/chat.types";
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export function ChatSidebar() {
-  // TODO There is a problem with loading user data after page reload, please correct this, it should read data from localstorage if user is logged in
-  // useAuth() has some issues with reading data correctly
-  const { user } = useAuth();
-  const [chats, setChats] = useState<TChat[] | null>([]);
+  const navigate = useNavigate();
+  const { user, setUser } = useAuth();
+  const [chats, setChats] = useState<TChat[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchChats = async () => {
-      if (user) {
-        const data = await getChats(user.id);
+      try {
+        const storedUser =
+          user || JSON.parse(localStorage.getItem("User") || "null");
+
+        if (!storedUser) {
+          throw new Error("User not logged in");
+        }
+
+        if (!user && storedUser) {
+          setUser(storedUser);
+        }
+
+        const data = await getChats(storedUser._id);
         setChats(data);
+      } catch (err: any) {
+        setError(err.message || "Failed to load chats");
+        localStorage.removeItem("User");
+        navigate("/login", {
+          state: { error: "Session expired. Please log in again." },
+        });
       }
     };
+
     fetchChats();
-  }, []);
+  }, [user, navigate, setUser]);
+
+  if (error) {
+    return (
+      <Sidebar>
+        <SidebarHeader />
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Error</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <p>{error}</p>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter />
+      </Sidebar>
+    );
+  }
 
   return (
     <Sidebar>
@@ -40,11 +76,11 @@ export function ChatSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {chats?.map((chat) => (
-                <SidebarMenuItem key={chat.id}>
+                <SidebarMenuItem key={chat._id}>
                   <SidebarMenuButton asChild>
-                    <a href={`/chat/${chat.id}`}>
+                    <Link to={`/chat/${user?._id}/${chat._id}`}>
                       <span>{chat.name}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

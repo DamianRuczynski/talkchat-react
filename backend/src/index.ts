@@ -3,6 +3,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes";
+import chatRoutes from "./routes/chatRoutes";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 app.use("/api/users", userRoutes);
+app.use("/api/chat", chatRoutes);
 
 app.get("/", (_req: Request, res: Response) => {
   res.send("Welcome to the chat app!");

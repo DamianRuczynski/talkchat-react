@@ -38,74 +38,60 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const registerUser = useCallback(
-    async (registerInfo: RegisterInfo): Promise<void> => {
+    async (registerInfo: RegisterInfo): Promise<User | null> => {
       setAuthLoading(true);
       setAuthError(null);
 
-      const mockUser: User = {
-        id: "mocked-user-id",
-        name: "John Doe",
-        email: "mocked@example.com",
-        token: "abc",
-      };
+      try {
+        const response: AuthResponse = await postRequest(
+          `${baseUrl}/users/register`,
+          JSON.stringify(registerInfo)
+        );
 
-      saveUserToStorage(mockUser);
-      return;
-      // TODO implement register from api, right now it is only mocked data
-      // try {
-      //   const response: AuthResponse = await postRequest(
-      //     `${baseUrl}/users/register`,
-      //     JSON.stringify(registerInfo)
-      //   );
-
-      //   if ("error" in response) {
-      //     setAuthError(response.error);
-      //   } else {
-      //     saveUserToStorage(response);
-      //   }
-      // } catch (error) {
-      //   setAuthError("Failed to register. Please try again.");
-      // } finally {
-      //   setAuthLoading(false);
-      // }
+        if ("error" in response) {
+          setAuthError(response.error);
+          return null;
+        } else {
+          saveUserToStorage(response);
+          return response;
+        }
+      } catch (error) {
+        setAuthError("Failed to register. Please try again.");
+        return null;
+      } finally {
+        setAuthLoading(false);
+      }
     },
     []
   );
 
-  const loginUser = useCallback(async (loginInfo: LoginInfo): Promise<void> => {
-    setAuthLoading(true);
-    setAuthError(null);
+  const loginUser = useCallback(
+    async (loginInfo: LoginInfo): Promise<User | null> => {
+      setAuthLoading(true);
+      setAuthError(null);
 
-    try {
-      // TODO on created api and correct login, change this mocked data into real from database
-      console.log("Mocked login active. Ignoring API call.");
+      try {
+        const response: AuthResponse = await postRequest(
+          `${baseUrl}/users/login`,
+          JSON.stringify(loginInfo)
+        );
 
-      const mockUser: User = {
-        id: "mocked-user-id",
-        name: "John Doe",
-        email: "mocked@example.com",
-        token: "abc",
-      };
-
-      saveUserToStorage(mockUser);
-      return;
-      // TODO implement login from api, right now it is only MOCKED data
-      // const response: AuthResponse = await postRequest(
-      //   `${baseUrl}/users/login`,
-      //   JSON.stringify(loginInfo)
-      // );
-
-      // if ("error" in response) {
-      //   setAuthError(response.error);
-      // } else {
-      //   saveUserToStorage(response);
-      // }
-    } catch (error) {
-      setAuthError("Failed to login. Please try again.");
-    } finally {
-      setAuthLoading(false);
-    }
-  }, []);
+        if ("error" in response) {
+          setAuthError(response.error);
+          return null;
+        } else {
+          saveUserToStorage(response);
+          return response;
+        }
+      } catch (error) {
+        setAuthError("Failed to login. Please try again.");
+        return null;
+      } finally {
+        setAuthLoading(false);
+      }
+    },
+    []
+  );
 
   const logoutUser = useCallback(() => {
     localStorage.removeItem("User");
@@ -116,6 +102,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
     <AuthContext.Provider
       value={{
         user,
+        setUser,
         authError,
         isAuthLoading,
         registerUser,

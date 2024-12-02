@@ -1,12 +1,18 @@
 export type TChat = {
-  id: string;
+  _id: string;
   name: string;
-  messages: Array<TMessages>;
+  userId: string;
+  messages: TMessage[];
+  createdAt: string;
+  updatedAt: string;
 };
 
-export type TMessages = {
-  id: number;
+export type TMessage = {
+  _id: string;
+  chatId: string;
   sender?: string;
   text: string;
   isMine: boolean;
+  createdAt: string;
+  updatedAt: string;
 };

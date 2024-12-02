@@ -11,6 +11,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { useAuth } from "@/context/auth.context";
+import { User } from "@/types/auth.types";
 
 const Login: React.FC = () => {
   const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
@@ -23,8 +24,15 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await loginUser(loginInfo);
-    navigate("/chat/1");
+    try {
+      await loginUser(loginInfo).then((user: User | null) => {
+        if (user) {
+          navigate(`/chat/${user._id}`);
+        }
+      });
+    } catch (err) {
+      console.error("Registration failed:", err);
+    }
   };
 
   return (

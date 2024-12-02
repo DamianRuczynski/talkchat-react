@@ -4,22 +4,29 @@ import Login from "@/pages/auth/login";
 import { Register } from "@/pages/auth/register";
 import ChatLayout from "@/pages/chat/chat-layout";
 
-const AppRoutes: React.FC = () => {  
-
-  // TODO secure private routes, access only for authenticated user
+const AppRoutes: React.FC = () => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route
-        path="/chat/:chatId"
+        path="/chat/:userId"
         element={
           <PrivateRoute>
-            <ChatLayout/>
+            <ChatLayout />
           </PrivateRoute>
         }
       />
-      
+
+      <Route
+        path="/chat/:userId/:chatId"
+        element={
+          <PrivateRoute>
+            <ChatLayout />
+          </PrivateRoute>
+        }
+      />
+
       <Route path="*" element={<Login />} />
     </Routes>
   );

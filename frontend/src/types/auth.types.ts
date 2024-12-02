@@ -1,5 +1,7 @@
+import { Dispatch, SetStateAction } from "react";
+
 export type User = {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   token: string;
@@ -17,12 +19,12 @@ export type AuthContextType = {
   user: User | null;
   authError: string | null;
   isAuthLoading: boolean;
-  registerUser: (info: RegisterInfo) => Promise<void>;
-  loginUser: (info: LoginInfo) => Promise<void>;
+  setUser: Dispatch<SetStateAction<User | null>>;
+  registerUser: (info: RegisterInfo) => Promise<User | null>;
+  loginUser: (info: LoginInfo) => Promise<User | null>;
   logoutUser: () => void;
 };
 
-// new
 export interface LoginInfo {
   email: string;
   password: string;
