@@ -27,7 +27,7 @@ const Login: React.FC = () => {
     try {
       await loginUser(loginInfo).then((user: User | null) => {
         if (user) {
-          navigate(`/chat/${user._id}`);
+          navigate(`/chat`);
         }
       });
     } catch (err) {

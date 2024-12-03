@@ -10,7 +10,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route
-        path="/chat/:userId"
+        path="/chat/:chatId"
         element={
           <PrivateRoute>
             <ChatLayout />
@@ -19,7 +19,7 @@ const AppRoutes: React.FC = () => {
       />
 
       <Route
-        path="/chat/:userId/:chatId"
+        path="/chat"
         element={
           <PrivateRoute>
             <ChatLayout />

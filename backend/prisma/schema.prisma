@@ -8,23 +8,35 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String   @db.String
-  email     String   @unique @db.String
-  password  String   @db.String
-  chats     Chat[]   @relation("UserChats") // Relation to Chat
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  name      String       @db.String
+  email     String       @unique @db.String
+  password  String       @db.String
+  chats     UsersChats[]
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
 }
 
 model Chat {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  name      String    @db.String
-  userId    String    @db.ObjectId
-  user      User      @relation(fields: [userId], references: [id], name: "UserChats")
-  messages  Message[]
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  name         String       @db.String
+  participants UsersChats[]
+  messages     Message[]
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+}
+
+// Explicit relation model for many-to-many relationship between User and Chat
+model UsersChats {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  chatId    String   @db.ObjectId
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, chatId])
 }
 
 model Message {
@@ -35,7 +47,5 @@ model Message {
   isMine    Boolean
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  
   chat      Chat     @relation(fields: [chatId], references: [id])
 }
-

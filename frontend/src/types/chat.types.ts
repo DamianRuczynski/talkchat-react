@@ -1,7 +1,9 @@
+import { User } from "./auth.types";
+
 export type TChat = {
   _id: string;
   name: string;
-  userId: string;
+  participants: User[];
   messages: TMessage[];
   createdAt: string;
   updatedAt: string;

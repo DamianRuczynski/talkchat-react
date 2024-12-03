@@ -6,7 +6,17 @@ export const getChats = async (userId: string): Promise<TChat[]> => {
   return response.data;
 };
 
-// TODO load chats only from user id
+export const getOrCreateChat = async (
+  loggedUserId: string,
+  targetUserId: string
+): Promise<TChat> => {
+  const response = await apiClient.post(`/chat`, {
+    loggedUserId,
+    targetUserId,
+  });
+  return response.data;
+};
+
 export const getChatById = async (
   userId: string,
   chatId: string
@@ -15,20 +25,25 @@ export const getChatById = async (
   return response.data;
 };
 
-export const createChat = async (
-  userId: string,
-  name: string
-): Promise<TChat> => {
-  const response = await fetch(`/chat`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ userId, name }),
+export const addMessage = async ({
+  userId,
+  chatId,
+  sender,
+  text,
+  isMine,
+}: {
+  userId: string;
+  chatId: string;
+  sender: string;
+  text: string;
+  isMine: boolean;
+}): Promise<any> => {
+  const response = await apiClient.post(`/message`, {
+    userId,
+    chatId,
+    sender,
+    text,
+    isMine,
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to create chat");
-  }
-  return response.json();
+  return response.data;
 };

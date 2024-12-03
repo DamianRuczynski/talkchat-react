@@ -40,7 +40,7 @@ export const Register = () => {
     try {
       await registerUser(formData).then((user: User | null) => {
         if (user) {
-          navigate(`/chat/${user._id}`);
+          navigate(`/chat`);
         }
       });
     } catch (err) {
@@ -61,7 +61,7 @@ export const Register = () => {
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
-            {authError && ( // Wyświetlanie błędów z kontekstu
+            {authError && (
               <Alert variant="destructive">
                 <AlertDescription>{authError}</AlertDescription>
               </Alert>
@@ -102,11 +102,7 @@ export const Register = () => {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isAuthLoading} // Blokowanie przycisku podczas ładowania
-            >
+            <Button type="submit" className="w-full" disabled={isAuthLoading}>
               {isAuthLoading ? "Creating account..." : "Create account"}
             </Button>
             <p className="text-center text-sm text-gray-600">

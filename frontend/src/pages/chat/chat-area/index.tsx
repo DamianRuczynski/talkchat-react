@@ -27,7 +27,7 @@ export const ChatArea = ({ chatId }: { chatId: string }) => {
 
   return (
     <div className="flex flex-col h-full">
-      <ChatHeader chatName={chat?.name} />
+      <ChatHeader chatName={chat?.participants[1].name} />
       <MessageList messages={chat.messages} />
       <MessageInput />
     </div>
